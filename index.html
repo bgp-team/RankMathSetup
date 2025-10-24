@@ -130,29 +130,48 @@
         const submitBtn = document.getElementById('submitBtn');
         const message = document.getElementById('message');
 
+        // Convert file to Base64
+        async function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+            });
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Disable button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
             message.style.display = 'none';
 
             try {
-                // Prepare data
-                const formData = new FormData();
-                formData.append('gameName', document.getElementById('gameName').value);
-                formData.append('metaDescription', document.getElementById('metaDescription').value);
-                formData.append('websiteUrl', document.getElementById('websiteUrl').value);
-                formData.append('username', document.getElementById('username').value);
-                formData.append('password', document.getElementById('password').value);
-                formData.append('faviconImage', document.getElementById('faviconImage').files[0]);
-                formData.append('postImage', document.getElementById('postImage').files[0]);
+                // Get files and convert to base64
+                const faviconFile = document.getElementById('faviconImage').files[0];
+                const postFile = document.getElementById('postImage').files[0];
 
-                // Send to n8n
+                const faviconBase64 = await toBase64(faviconFile);
+                const postBase64 = await toBase64(postFile);
+
+                // Build JSON payload
+                const payload = {
+                    gameName: document.getElementById('gameName').value,
+                    metaDescription: document.getElementById('metaDescription').value,
+                    websiteUrl: document.getElementById('websiteUrl').value,
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value,
+                    faviconImage: faviconBase64,
+                    postImage: postBase64
+                };
+
+                // Send JSON to n8n
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
-                    body: formData
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
