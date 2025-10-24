@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un jeu</title>
+    <title>Add Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,11 +78,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Ajouter un jeu</h1>
+        <h1>🎮 Add Game</h1>
         
         <form id="gameForm">
             <div class="form-group">
-                <label>Nom du jeu *</label>
+                <label>Game Name *</label>
                 <input type="text" id="gameName" required>
             </div>
 
@@ -93,12 +92,7 @@
             </div>
 
             <div class="form-group">
-                <label>URL du jeu *</label>
-                <input type="url" id="gameUrl" required>
-            </div>
-
-            <div class="form-group">
-                <label>URL Website *</label>
+                <label>Website URL *</label>
                 <input type="url" id="websiteUrl" required>
             </div>
 
@@ -122,14 +116,14 @@
                 <input type="file" id="postImage" accept="image/*" required>
             </div>
 
-            <button type="submit" id="submitBtn">Envoyer</button>
+            <button type="submit" id="submitBtn">Send</button>
         </form>
 
         <div id="message" class="message"></div>
     </div>
 
     <script>
-        // 🔥 METTEZ VOTRE URL WEBHOOK N8N ICI
+        // 🔥 PUT YOUR N8N WEBHOOK URL HERE
         const WEBHOOK_URL = 'https://n8n.srv1053791.hstgr.cloud/webhook-test/123087d9-ebc3-47da-8e5d-99a750b7f5c8';
 
         const form = document.getElementById('gameForm');
@@ -139,40 +133,39 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Désactiver le bouton
+            // Disable button
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Envoi en cours...';
+            submitBtn.textContent = 'Sending...';
             message.style.display = 'none';
 
             try {
-                // Préparer les données
+                // Prepare data
                 const formData = new FormData();
                 formData.append('gameName', document.getElementById('gameName').value);
                 formData.append('metaDescription', document.getElementById('metaDescription').value);
-                formData.append('gameUrl', document.getElementById('gameUrl').value);
                 formData.append('websiteUrl', document.getElementById('websiteUrl').value);
                 formData.append('username', document.getElementById('username').value);
                 formData.append('password', document.getElementById('password').value);
                 formData.append('faviconImage', document.getElementById('faviconImage').files[0]);
                 formData.append('postImage', document.getElementById('postImage').files[0]);
 
-                // Envoyer à n8n
+                // Send to n8n
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     body: formData
                 });
 
                 if (response.ok) {
-                    showMessage('✅ Jeu envoyé avec succès !', 'success');
+                    showMessage('✅ Game sent successfully!', 'success');
                     form.reset();
                 } else {
-                    throw new Error('Erreur lors de l\'envoi');
+                    throw new Error('Error while sending');
                 }
             } catch (error) {
-                showMessage('❌ Erreur: ' + error.message, 'error');
+                showMessage('❌ Error: ' + error.message, 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Envoyer';
+                submitBtn.textContent = 'Send';
             }
         });
 
