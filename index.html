@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
             background: #f5f5f5;
@@ -22,6 +22,14 @@
             color: #333;
             text-align: center;
         }
+        h2 {
+            color: #555;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
         .form-group {
             margin-bottom: 20px;
         }
@@ -31,16 +39,34 @@
             font-weight: bold;
             color: #555;
         }
+        label .optional {
+            font-weight: normal;
+            color: #888;
+            font-size: 13px;
+        }
         input, textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
+            box-sizing: border-box;
         }
         textarea {
             resize: vertical;
             min-height: 80px;
+        }
+        .faq-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 3px solid #4CAF50;
+        }
+        .faq-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
         }
         button {
             width: 100%;
@@ -51,6 +77,7 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 20px;
         }
         button:hover {
             background: #45a049;
@@ -81,6 +108,8 @@
         <h1>🎮 Add Game</h1>
         
         <form id="gameForm">
+            <h2>📋 Basic Information</h2>
+            
             <div class="form-group">
                 <label>Game Name *</label>
                 <input type="text" id="gameName" required>
@@ -92,9 +121,50 @@
             </div>
 
             <div class="form-group">
+                <label>Author Name *</label>
+                <input type="text" id="authorName" required>
+            </div>
+
+            <h2>🌐 URLs & Links</h2>
+
+            <div class="form-group">
                 <label>Website URL *</label>
                 <input type="url" id="websiteUrl" required>
             </div>
+
+            <div class="form-group">
+                <label>Wikipedia Game URL <span class="optional">(optional)</span></label>
+                <input type="url" id="wikipediaGameUrl">
+            </div>
+
+            <div class="form-group">
+                <label>App Store URL *</label>
+                <input type="url" id="appStoreUrl" required>
+            </div>
+
+            <div class="form-group">
+                <label>Google Play URL *</label>
+                <input type="url" id="googlePlayUrl" required>
+            </div>
+
+            <h2>👨‍💻 Developer Information</h2>
+
+            <div class="form-group">
+                <label>Developer Name *</label>
+                <input type="text" id="developerName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Wikipedia Developer URL <span class="optional">(optional)</span></label>
+                <input type="url" id="wikipediaDeveloperUrl">
+            </div>
+
+            <div class="form-group">
+                <label>Twitter Developer URL <span class="optional">(optional)</span></label>
+                <input type="url" id="twitterDeveloperUrl">
+            </div>
+
+            <h2>🔐 Credentials</h2>
 
             <div class="form-group">
                 <label>Username *</label>
@@ -106,6 +176,8 @@
                 <input type="password" id="password" required>
             </div>
 
+            <h2>🖼️ Images</h2>
+
             <div class="form-group">
                 <label>Favicon Image *</label>
                 <input type="file" id="faviconImage" accept="image/*" required>
@@ -114,6 +186,49 @@
             <div class="form-group">
                 <label>Post Image *</label>
                 <input type="file" id="postImage" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label>Thumbnail Image *</label>
+                <input type="file" id="thumbnailImage" accept="image/*" required>
+            </div>
+
+            <h2>❓ FAQ Section <span class="optional">(optional)</span></h2>
+
+            <div class="faq-item">
+                <h3>FAQ 1</h3>
+                <div class="form-group">
+                    <label>Question 1 <span class="optional">(optional)</span></label>
+                    <input type="text" id="faqQuestion1">
+                </div>
+                <div class="form-group">
+                    <label>Answer 1 <span class="optional">(optional)</span></label>
+                    <textarea id="faqAnswer1"></textarea>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3>FAQ 2</h3>
+                <div class="form-group">
+                    <label>Question 2 <span class="optional">(optional)</span></label>
+                    <input type="text" id="faqQuestion2">
+                </div>
+                <div class="form-group">
+                    <label>Answer 2 <span class="optional">(optional)</span></label>
+                    <textarea id="faqAnswer2"></textarea>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3>FAQ 3</h3>
+                <div class="form-group">
+                    <label>Question 3 <span class="optional">(optional)</span></label>
+                    <input type="text" id="faqQuestion3">
+                </div>
+                <div class="form-group">
+                    <label>Answer 3 <span class="optional">(optional)</span></label>
+                    <textarea id="faqAnswer3"></textarea>
+                </div>
             </div>
 
             <button type="submit" id="submitBtn">Send</button>
@@ -152,19 +267,41 @@
                 // Get files and convert to base64
                 const faviconFile = document.getElementById('faviconImage').files[0];
                 const postFile = document.getElementById('postImage').files[0];
+                const thumbnailFile = document.getElementById('thumbnailImage').files[0];
 
                 const faviconBase64 = await toBase64(faviconFile);
                 const postBase64 = await toBase64(postFile);
+                const thumbnailBase64 = await toBase64(thumbnailFile);
+
+                // Build FAQ array (only include if both question and answer are filled)
+                const faqItems = [];
+                for (let i = 1; i <= 3; i++) {
+                    const question = document.getElementById(`faqQuestion${i}`).value.trim();
+                    const answer = document.getElementById(`faqAnswer${i}`).value.trim();
+                    
+                    if (question && answer) {
+                        faqItems.push({ question, answer });
+                    }
+                }
 
                 // Build JSON payload
                 const payload = {
                     gameName: document.getElementById('gameName').value,
                     metaDescription: document.getElementById('metaDescription').value,
+                    authorName: document.getElementById('authorName').value,
                     websiteUrl: document.getElementById('websiteUrl').value,
+                    wikipediaGameUrl: document.getElementById('wikipediaGameUrl').value || null,
+                    appStoreUrl: document.getElementById('appStoreUrl').value,
+                    googlePlayUrl: document.getElementById('googlePlayUrl').value,
+                    developerName: document.getElementById('developerName').value,
+                    wikipediaDeveloperUrl: document.getElementById('wikipediaDeveloperUrl').value || null,
+                    twitterDeveloperUrl: document.getElementById('twitterDeveloperUrl').value || null,
                     username: document.getElementById('username').value,
                     password: document.getElementById('password').value,
                     faviconImage: faviconBase64,
-                    postImage: postBase64
+                    postImage: postBase64,
+                    thumbnailImage: thumbnailBase64,
+                    faq: faqItems.length > 0 ? faqItems : null
                 };
 
                 // Send JSON to n8n
