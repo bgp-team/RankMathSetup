@@ -3,23 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Game</title>
+    <title>Setup Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
-            background: #f5f5f5;
         }
         .container {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         h1 {
             color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .required-note {
+            color: #666;
+            font-size: 13px;
+            font-style: italic;
+            margin-bottom: 30px;
             text-align: center;
         }
         h2 {
@@ -28,7 +43,7 @@
             margin-top: 30px;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #4CAF50;
+            border-bottom: 2px solid #667eea;
         }
         .form-group {
             margin-bottom: 20px;
@@ -51,17 +66,22 @@
             border-radius: 5px;
             font-size: 14px;
             box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
         .faq-item {
             background: #f9f9f9;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 15px;
-            border-left: 3px solid #4CAF50;
+            border-left: 3px solid #667eea;
         }
         .faq-item h3 {
             margin: 0 0 10px 0;
@@ -70,25 +90,28 @@
         }
         button {
             width: 100%;
-            padding: 12px;
-            background: #4CAF50;
+            padding: 15px;
+            background: #667eea;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 20px;
+            transition: background 0.3s;
         }
-        button:hover {
-            background: #45a049;
+        button:hover:not(:disabled) {
+            background: #5568d3;
         }
         button:disabled {
             background: #ccc;
+            cursor: not-allowed;
         }
         .message {
             margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
             display: none;
         }
         .success {
@@ -106,6 +129,7 @@
 <body>
     <div class="container">
         <h1>🎮 Add Game</h1>
+        <p class="required-note">* All required fields must be filled</p>
         
         <form id="gameForm">
             <h2>📋 Basic Information</h2>
@@ -123,6 +147,11 @@
             <div class="form-group">
                 <label>Author Name *</label>
                 <input type="text" id="authorName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Iframe URL *</label>
+                <input type="url" id="iframeUrl" required placeholder="https://example.com/game">
             </div>
 
             <h2>🔐 Website & Credentials</h2>
@@ -176,6 +205,25 @@
                 <input type="url" id="twitterDeveloperUrl">
             </div>
 
+            <h2>🕹️ Similar Games</h2>
+
+            <div class="form-group">
+                <label>Similar Game 1 *</label>
+                <input type="text" id="similarGame1" required placeholder="First similar game name">
+            </div>
+
+            <div class="form-group">
+                <label>Similar Game 2 *</label>
+                <input type="text" id="similarGame2" required placeholder="Second similar game name">
+            </div>
+
+            <h2>📝 Content</h2>
+
+            <div class="form-group">
+                <label>Post Content *</label>
+                <textarea id="content" required placeholder="Full post content..." style="min-height: 200px;"></textarea>
+            </div>
+
             <h2>🖼️ Images</h2>
 
             <div class="form-group">
@@ -193,7 +241,7 @@
                 <input type="file" id="thumbnailImage" accept="image/*" required>
             </div>
 
-            <h2>❓ FAQ Section <span class="optional">(optional)</span></h2>
+            <h2>❓ FAQ Section <span class="optional" style="font-size: 14px; color: #888;">(optional)</span></h2>
 
             <div class="faq-item">
                 <h3>FAQ 1</h3>
@@ -289,6 +337,7 @@
                     gameName: document.getElementById('gameName').value,
                     metaDescription: document.getElementById('metaDescription').value,
                     authorName: document.getElementById('authorName').value,
+                    iframeUrl: document.getElementById('iframeUrl').value,
                     websiteUrl: document.getElementById('websiteUrl').value,
                     wikipediaGameUrl: document.getElementById('wikipediaGameUrl').value || null,
                     appStoreUrl: document.getElementById('appStoreUrl').value,
@@ -298,10 +347,15 @@
                     twitterDeveloperUrl: document.getElementById('twitterDeveloperUrl').value || null,
                     username: document.getElementById('username').value,
                     password: document.getElementById('password').value,
+                    similarGame1: document.getElementById('similarGame1').value,
+                    similarGame2: document.getElementById('similarGame2').value,
+                    content: document.getElementById('content').value,
                     faviconImage: faviconBase64,
                     postImage: postBase64,
                     thumbnailImage: thumbnailBase64,
-                    faq: faqItems.length > 0 ? faqItems : null
+                    faq: faqItems.length > 0 ? faqItems : null,
+                    triggered_by: 'client',
+                    timestamp: new Date().toISOString()
                 };
 
                 // Send JSON to n8n
