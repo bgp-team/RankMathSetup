@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Game</title>
+    <title>Setup Main Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -226,6 +226,12 @@
 
             <h2>🖼️ Images</h2>
 
+            <!-- Ajout: Logo en premier -->
+            <div class="form-group">
+                <label>Logo Image *</label>
+                <input type="file" id="logoImage" accept="image/*" required>
+            </div>
+
             <div class="form-group">
                 <label>Favicon Image *</label>
                 <input type="file" id="faviconImage" accept="image/*" required>
@@ -313,10 +319,12 @@
 
             try {
                 // Get files and convert to base64
+                const logoFile = document.getElementById('logoImage').files[0];
                 const faviconFile = document.getElementById('faviconImage').files[0];
                 const postFile = document.getElementById('postImage').files[0];
                 const thumbnailFile = document.getElementById('thumbnailImage').files[0];
 
+                const logoBase64 = await toBase64(logoFile);
                 const faviconBase64 = await toBase64(faviconFile);
                 const postBase64 = await toBase64(postFile);
                 const thumbnailBase64 = await toBase64(thumbnailFile);
@@ -350,6 +358,8 @@
                     similarGame1: document.getElementById('similarGame1').value,
                     similarGame2: document.getElementById('similarGame2').value,
                     content: document.getElementById('content').value,
+                    // Added order: logo, favicon, post, thumbnail
+                    logoImage: logoBase64,
                     faviconImage: faviconBase64,
                     postImage: postBase64,
                     thumbnailImage: thumbnailBase64,
@@ -368,6 +378,11 @@
                 if (response.ok) {
                     showMessage('✅ Game sent successfully!', 'success');
                     form.reset();
+                    // Clear file inputs explicitly to avoid file selection cache
+                    ['logoImage','faviconImage','postImage','thumbnailImage'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = '';
+                    });
                 } else {
                     throw new Error('Error while sending');
                 }
